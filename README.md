@@ -20,7 +20,7 @@ Instalación y ejecución
    
 git clone https://github.com/kymba95/traductor_lsc.git
 
-2, Navegar a la carpeta
+2. Navegar a la carpeta
 
 cd traductor_lsc
 
@@ -29,11 +29,13 @@ cd traductor_lsc
 Windows
 
 python -m venv venv
+
 .\venv\Scripts\activate
 
 macOS o Linux
 
 python3 -m venv venv
+
 source venv/bin/activate
 
 4. Instalar dependencias
