@@ -15,7 +15,7 @@ Descripción del funcionamiento
 El sistema utiliza la cámara para detectar la mano del usuario, identifica la seña correspondiente a la mano abierta (cuatro dedos extendidos), muestra el texto "HOLA" en pantalla y reproduce en voz la palabra "Hola".
 El prototipo es demostrativo y académico, no representa una aplicación final ni un sistema de reconocimiento completo de señas.
 
-En windows usar PowerShell y en Mac la Terminal.
+En windows usar PowerShell y en Mac la Terminal. Durante su primer uso tarda en iniciar un poco, pero en ejecuciones posteriores es casi inmediato inicializarlo. 
 
 Instalación y ejecución
 1. Clonar el repositorio
