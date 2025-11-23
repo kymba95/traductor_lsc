@@ -2,13 +2,16 @@ import cv2
 import mediapipe as mp
 import pyttsx3
 import time
+import platform  # para detectar el sistema operativo
+
 
 # ----------------------- CONFIGURACIÓN MEDIAPIPE -----------------------
 mp_hands = mp.solutions.hands
 mp_drawing = mp.solutions.drawing_utils
 
 # ----------------------- CONTROL DE VOZ (MULTIPLATAFORMA) -----------------------
-last_spoken = 0  # Evita hablar muchas veces seguidas
+last_spoken = 0  # evita hablar muchas veces seguidas
+
 
 def speak(text):
     """
@@ -28,12 +31,16 @@ def speak(text):
     engine.runAndWait()
     engine.stop()
 
+
 # ----------------------- DETECCIÓN DE MANO ABIERTA (4 DEDOS) -----------------------
 def is_hand_open(landmarks, width, height):
-    """Detecta si la mano está abierta comparando puntas de dedos con nudillos."""
-    # Índices de puntas de dedos y nudillos (NO se considera pulgar)
-    finger_tips = [8, 12, 16, 20]     # índice, medio, anular, meñique
-    finger_pips = [6, 10, 14, 18]     # nudillos intermedios
+    """
+    Detecta si la mano está abierta comparando puntas de dedos con nudillos.
+    No se tiene en cuenta el pulgar para evitar falsos positivos.
+    """
+    # Índices de puntas de dedos y nudillos (índice, medio, anular, meñique)
+    finger_tips = [8, 12, 16, 20]
+    finger_pips = [6, 10, 14, 18]
 
     open_fingers = 0
     for tip, pip in zip(finger_tips, finger_pips):
@@ -45,20 +52,38 @@ def is_hand_open(landmarks, width, height):
     # Solo considerar mano abierta si 4 dedos están extendidos
     return open_fingers >= 4
 
+
 # ----------------------- PROGRAMA PRINCIPAL -----------------------
 def main():
-    cap = cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+    # Seleccionar backend de cámara según el sistema operativo
+    so = platform.system()
+
+    if so == "Windows":
+        # En Windows va mejor con DirectShow
+        cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+    elif so == "Darwin":
+        # En macOS funciona mejor AVFoundation
+        cap = cv2.VideoCapture(0, cv2.CAP_AVFOUNDATION)
+    else:
+        # En Linux u otros, usar el backend por defecto
+        cap = cv2.VideoCapture(0)
+
+    # Si por alguna razón no se abre, intentar de nuevo con el backend por defecto
     if not cap.isOpened():
-        print("❌ No se pudo acceder a la cámara.")
+        cap = cv2.VideoCapture(0)
+
+    if not cap.isOpened():
+        print("No se pudo acceder a la cámara.")
         return
 
+    # Configuración básica de captura
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
     cap.set(cv2.CAP_PROP_FPS, 30)
 
     gesture_text = ""
     last_detected_time = 0
-    last_gesture = None  # Registro del último gesto hablado
+    last_gesture = None  # registro del último gesto hablado
 
     with mp_hands.Hands(
         static_image_mode=False,
@@ -70,7 +95,7 @@ def main():
         while True:
             ret, frame = cap.read()
             if not ret:
-                print("❌ Error leyendo la cámara.")
+                print("Error leyendo la cámara.")
                 break
 
             frame = cv2.flip(frame, 1)
@@ -119,7 +144,7 @@ def main():
 
             cv2.putText(
                 frame,
-                "Levanta la mano abierta para decir 'HOLA', para salir presiona q",
+                "Levanta la mano abierta para decir 'HOLA', para salir presiona 'q'",
                 (10, 460),
                 cv2.FONT_HERSHEY_SIMPLEX,
                 0.6,
@@ -135,6 +160,6 @@ def main():
     cap.release()
     cv2.destroyAllWindows()
 
-# --------------------------------------------------------------------------
+
 if __name__ == "__main__":
     main()
