@@ -19,9 +19,12 @@ Instalación y ejecución
 1. Clonar el repositorio
    
 git clone https://github.com/kymba95/traductor_lsc.git
+
+2, Navegar a la carpeta
+
 cd traductor_lsc
 
-2. Crear un entorno virtual
+3. Crear un entorno virtual
    
 Windows
 
@@ -33,11 +36,11 @@ macOS o Linux
 python3 -m venv venv
 source venv/bin/activate
 
-3. Instalar dependencias
+4. Instalar dependencias
    
 pip install -r requirements.txt
 
-4. Ejecutar el prototipo
+5. Ejecutar el prototipo
    
 python prototipo_lsc.py
 
