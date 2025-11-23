@@ -47,13 +47,14 @@ def is_hand_open(landmarks, width, height):
 
 # ----------------------- PROGRAMA PRINCIPAL -----------------------
 def main():
-    cap = cv2.VideoCapture(0)
+    cap = cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
     if not cap.isOpened():
         print("❌ No se pudo acceder a la cámara.")
         return
 
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+    cap.set(cv2.CAP_PROP_FPS, 30)
 
     gesture_text = ""
     last_detected_time = 0
@@ -118,7 +119,7 @@ def main():
 
             cv2.putText(
                 frame,
-                "Levanta la mano abierta para decir 'HOLA'",
+                "Levanta la mano abierta para decir 'HOLA', para salir presiona q",
                 (10, 460),
                 cv2.FONT_HERSHEY_SIMPLEX,
                 0.6,
